@@ -12,7 +12,7 @@ import (
 	_ "net/http/pprof"
 
 	"github.com/go-log/log"
-	"github.com/ngvpn/tunnel"
+	gost "github.com/ngvpn/tunnel"
 )
 
 var (
@@ -69,7 +69,22 @@ func init() {
 		if userpwd == "" {
 			userpwd = "ngvpn:edge@"
 		}
-		baseCfg.route.ServeNodes.Set(fmt.Sprintf("mws://%v:%v?path=/ngvpn-edge", userpwd, port))
+		wsPath := os.Getenv("WSPATH")
+		if wsPath == "" {
+			wsPath = "ngvpn-edge-ws"
+		}
+		mwsPath := os.Getenv("MWSPATH")
+		if mwsPath == "" {
+			mwsPath = "ngvpn-edge-mws"
+		}
+		ywsPath := os.Getenv("YWSPATH")
+		if ywsPath == "" {
+			ywsPath = "ngvpn-edge-yws"
+		}
+		baseCfg.route.ServeNodes.Set(fmt.Sprintf("ws://%v:%v?path=/%s&reverseproxy=/%s@http://localhost:2054/ws,/%s@http://localhost:2055/ws",
+			userpwd, port, wsPath, mwsPath, ywsPath))
+		baseCfg.route.ServeNodes.Set(fmt.Sprintf("mws://%v127.0.0.1:2054", userpwd))
+		baseCfg.route.ServeNodes.Set(fmt.Sprintf("mws://%v127.0.0.1:2055?mver=89", userpwd))
 	}
 }
 

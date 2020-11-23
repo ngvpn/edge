@@ -138,6 +138,9 @@ func parseChainNode(ns string) (nodes []gost.Node, err error) {
 	wsOpts.WriteBufferSize = node.GetInt("wbuf")
 	wsOpts.UserAgent = node.Get("agent")
 	wsOpts.Path = node.Get("path")
+	wsOpts.MuxVersion = node.GetInt("mver")
+	wsOpts.MuxMaxReceiveBuffer = node.GetInt("mrbuf")
+	wsOpts.MuxMaxStreamBuffer = node.GetInt("msbuf")
 
 	timeout := node.GetDuration("timeout")
 
@@ -357,6 +360,10 @@ func (r *route) GenRouters() ([]router, error) {
 		wsOpts.ReadBufferSize = node.GetInt("rbuf")
 		wsOpts.WriteBufferSize = node.GetInt("wbuf")
 		wsOpts.Path = node.Get("path")
+		wsOpts.ReverseProxy = node.Get("reverseproxy")
+		wsOpts.MuxVersion = node.GetInt("mver")
+		wsOpts.MuxMaxReceiveBuffer = node.GetInt("mrbuf")
+		wsOpts.MuxMaxStreamBuffer = node.GetInt("msbuf")
 
 		ttl := node.GetDuration("ttl")
 		timeout := node.GetDuration("timeout")
