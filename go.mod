@@ -1,7 +1,7 @@
-// +heroku goVersion go1.14
+// +heroku goVersion go1.16
 module github.com/ngvpn/edge
 
-go 1.14
+go 1.16
 
 require (
 	github.com/go-log/log v0.2.0
