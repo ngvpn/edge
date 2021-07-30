@@ -69,27 +69,27 @@ func init() {
 		if userpwd == "" {
 			userpwd = "ngvpn:edge@"
 		}
-		wsPath := os.Getenv("WSPATH")
-		if wsPath == "" {
-			wsPath = "ngvpn-edge-ws"
+		wsRelayPath := os.Getenv("WSPATH")
+		if wsRelayPath == "" {
+			wsRelayPath = "ngvpn-edge-ws"
 		}
-		mwsPath := os.Getenv("MWSPATH")
-		if mwsPath == "" {
-			mwsPath = "ngvpn-edge-mws"
+		mwsRelayPath := os.Getenv("MWSPATH")
+		if mwsRelayPath == "" {
+			mwsRelayPath = "ngvpn-edge-mws"
 		}
-		ywsPath := os.Getenv("YWSPATH")
-		if ywsPath == "" {
-			ywsPath = "ngvpn-edge-yws"
+		wsSocksPath := os.Getenv("WSSOCKSPATH")
+		if wsSocksPath == "" {
+			wsSocksPath = "ngvpn-edge-ws-socks"
 		}
-		mws2Path := os.Getenv("MWS2PATH")
-		if mws2Path == "" {
-			mws2Path = "ngvpn-edge-mws2"
+		mwsSocksPath := os.Getenv("MWSSOCKSPATH")
+		if mwsSocksPath == "" {
+			mwsSocksPath = "ngvpn-edge-mws-socks"
 		}
-		baseCfg.route.ServeNodes.Set(fmt.Sprintf("ws://%v:%v?path=/%s&reverseproxy=/%s@http://localhost:2054/ws,/%s@http://localhost:2055/ws,/%s@http://localhost:2056/ws",
-			userpwd, port, wsPath, mwsPath, ywsPath, mws2Path))
-		baseCfg.route.ServeNodes.Set(fmt.Sprintf("mws://%v127.0.0.1:2054", userpwd))
-		baseCfg.route.ServeNodes.Set(fmt.Sprintf("mws://%v127.0.0.1:2055?mver=89", userpwd))
-		baseCfg.route.ServeNodes.Set(fmt.Sprintf("mws://%v127.0.0.1:2056?mver=2", userpwd))
+		baseCfg.route.ServeNodes.Set(fmt.Sprintf("relay+ws://%v:%v?path=/%s&reverseproxy=/%s@http://localhost:2054/ws,/%s@http://localhost:2055/ws,/%s@http://localhost:2056/ws",
+			userpwd, port, wsRelayPath, mwsRelayPath, wsSocksPath, mwsSocksPath))
+		baseCfg.route.ServeNodes.Set(fmt.Sprintf("relay+mws://%v127.0.0.1:2054", userpwd))
+		baseCfg.route.ServeNodes.Set(fmt.Sprintf("ws://%v127.0.0.1:2055", userpwd))
+		baseCfg.route.ServeNodes.Set(fmt.Sprintf("mws://%v127.0.0.1:2056", userpwd))
 		baseCfg.route.ServeNodes.Set(fmt.Sprintf("h2c://%v127.0.0.1:2057", userpwd))
 		baseCfg.route.ServeNodes.Set(fmt.Sprintf("quic://%v127.0.0.1:2058", userpwd))
 	}

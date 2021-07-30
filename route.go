@@ -3,12 +3,14 @@ package main
 import (
 	"crypto/sha256"
 	"crypto/tls"
+	"crypto/x509"
 	"encoding/base64"
 	"fmt"
 	"net"
 	"net/url"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/go-log/log"
 	"github.com/ngvpn/tunnel"
@@ -128,6 +130,31 @@ func parseChainNode(ns string) (nodes []gost.Node, err error) {
 		InsecureSkipVerify: !node.GetBool("secure"),
 		RootCAs:            rootCAs,
 	}
+
+	// If the argument `ca` is given, but not open `secure`, we verify the
+	// certificate manually.
+	if rootCAs != nil && !node.GetBool("secure") {
+		tlsCfg.VerifyConnection = func(state tls.ConnectionState) error {
+			opts := x509.VerifyOptions{
+				Roots:         rootCAs,
+				CurrentTime:   time.Now(),
+				DNSName:       "",
+				Intermediates: x509.NewCertPool(),
+			}
+
+			certs := state.PeerCertificates
+			for i, cert := range certs {
+				if i == 0 {
+					continue
+				}
+				opts.Intermediates.AddCert(cert)
+			}
+
+			_, err = certs[0].Verify(opts)
+			return err
+		}
+	}
+
 	if cert, err := tls.LoadX509KeyPair(node.Get("cert"), node.Get("key")); err == nil {
 		tlsCfg.Certificates = []tls.Certificate{cert}
 	}
@@ -465,7 +492,7 @@ func (r *route) GenRouters() ([]router, error) {
 				chain.Nodes()[len(chain.Nodes())-1].Client.Connector = gost.SSHRemoteForwardConnector()
 				chain.Nodes()[len(chain.Nodes())-1].Client.Transporter = gost.SSHForwardTransporter()
 			}
-			ln, err = gost.TCPRemoteForwardListener(node.Addr, chain)
+			ln, err = gost.TCPRemoteForwardListener(node.Addr, chain, parseBypass(node.Get("bypass")))
 		case "rudp":
 			ln, err = gost.UDPRemoteForwardListener(node.Addr,
 				chain,
@@ -638,6 +665,11 @@ func (r *route) GenRouters() ([]router, error) {
 			resolver: resolver,
 			hosts:    hosts,
 		}
+
+		rt.server.Init(
+			gost.BypassAcceptServerOption(parseBypass(node.Get("bypassaccept"))),
+		)
+
 		rts = append(rts, rt)
 	}
 
