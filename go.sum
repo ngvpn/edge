@@ -90,6 +90,8 @@ github.com/mmcloughlin/avo v0.0.0-20200803215136-443f81d77104 h1:ULR/QWMgcgRiZLU
 github.com/mmcloughlin/avo v0.0.0-20200803215136-443f81d77104/go.mod h1:wqKykBG2QzQDJEzvRkcS8x6MiSJkF52hXZsXcjaB3ls=
 github.com/ngvpn/tunnel v0.4.1 h1:pVeLGUXSJwjYKBlmCCPGLwOzh283fqdpvDEUe8rHH5o=
 github.com/ngvpn/tunnel v0.4.1/go.mod h1:tvnPx+HpKl2GezLkRQlENhlkfb0ogBZvILHjAwXvGAE=
+github.com/ngvpn/tunnel v0.4.11 h1:zduaGjiqSj35ON6XxnrJICr5+/yGaGMFj+at8yt5uBM=
+github.com/ngvpn/tunnel v0.4.11/go.mod h1:tvnPx+HpKl2GezLkRQlENhlkfb0ogBZvILHjAwXvGAE=
 github.com/nxadm/tail v1.4.4/go.mod h1:kenIhsEOeOJmVchQTgglprH7qJGnHDVpk1VPCcaMI8A=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v1.12.1/go.mod h1:zj2OWP4+oCPe1qIXoGWkgMRwljMUYCdkwsT2108oapk=

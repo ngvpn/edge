@@ -8,6 +8,9 @@ import (
 	"net/http"
 	"os"
 	"runtime"
+	"runtime/debug"
+	"strconv"
+	"time"
 
 	_ "net/http/pprof"
 
@@ -52,6 +55,18 @@ func init() {
 		if err != nil {
 			log.Log(err)
 			os.Exit(1)
+		}
+	}
+
+	if freeMem := os.Getenv("FREEMEM"); freeMem != "" {
+		debug.SetGCPercent(10)
+		if seconds, err := strconv.Atoi(freeMem); err == nil {
+			ticker := time.NewTicker(time.Second * time.Duration(seconds))
+			go func() {
+				for range ticker.C {
+					debug.FreeOSMemory()
+				}
+			}()
 		}
 	}
 
